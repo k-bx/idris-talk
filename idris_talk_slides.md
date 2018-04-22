@@ -453,7 +453,16 @@ namespace ConsoleDo
 
 ## Laziness is opt-in, not opt-out
 
-TODO
+```idris
+data SplitRec : List a -> Type where
+     SplitRecNil : SplitRec []
+     SplitRecOne : SplitRec [x]
+     SplitRecPair : (lrec : Lazy (SplitRec lefts)) ->
+                    (rrec : Lazy (SplitRec rights)) ->
+                    SplitRec (lefts ++ rights)
+
+total splitRec : (xs : List a) -> SplitRec xs
+```
 
 ## Type synonyms are just a special case of function application
 
@@ -473,7 +482,28 @@ tri = [(0.0, 0.0), (3.0, 0.0), (0.0, 4.0)]
 
 ## Totality checking
 
-TODO
+```idris
+wordCount : String -> Nat
+wordCount str = length (words str)
+
+allLengths : List String -> List Nat
+allLengths strs = map length strs
+
+total
+average : (str : String) -> Double
+average str = let numWords = wordCount str
+                  totalLength = sum (allLengths (words str)) in
+                  cast totalLength / cast numWords
+```
+
+## Totality checking
+
+```idris
+λΠ> :doc average
+Main.average : (str : String) -> Double
+    
+    The function is Total
+```
 
 ## Implicit values
 
